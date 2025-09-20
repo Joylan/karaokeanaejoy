@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Músicas</title>
+<style>
+body { font-family: Arial, sans-serif; padding: 10px; }
+h1 { text-align: center; font-size: 24px; margin-bottom: 10px; }
+table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+th { background-color: #f2f2f2; }
+input { width: 70%; padding: 10px; margin-right: 5px; font-size: 16px; }
+button { padding: 10px; cursor: pointer; font-size: 16px; }
+
+/* Botão Buscar maior */
+#btnSearch {
+    padding-top: 15px;  /* 30% maior que padding original 10px */
+    padding-bottom: 15px;
+}
+
+/* Container de busca */
+.search-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+}
+
+/* Mobile: ajustes de layout e fontes */
+@media(max-width: 600px) {
+    h1 { font-size: 18px; margin-bottom: 8px; }
+    .search-container {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    input, #btnSearch, #btnReset {
+        width: 80%;
+        font-size: 18px;
+        padding: 12px;
+    }
+    #btnReset { width: 50%; }
+}
+
+/* Aviso de carregamento */
+#loading {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: red;
+    margin: 20px 0;
+    display: none;
+}
+</style>
+</head>
+<body>
+<h1>Músicas Karaokê Ana&Joy</h1>
+
+<div class="search-container">
+    <input type="text" id="search" placeholder="Buscar artista ou música">
+    <button id="btnSearch">Buscar</button>
+    <button id="btnReset">Mostrar todas</button>
+</div>
+
+<div id="loading">Carregando músicas...</div>
+
+<table id="songsTable">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Artista</th>
+            <th>Música</th>
+        </tr>
+    </thead>
+    <tbody id="songsBody"></tbody>
+</table>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+    const tbody = document.getElementById('songsBody');
+    const loading = document.getElementById('loading');
+    const searchInput = document.getElementById('search');
+    let songs = [];
+
+    loading.style.display = 'block';
+
+    fetch('songs.json')
+        .then(res => res.json())
+        .then(data => {
+            songs = data;
+            renderSongs(songs);
+            loading.style.display = 'none';
+        })
+        .catch(err => {
+            console.error("Erro ao carregar músicas:", err);
+            loading.textContent = 'Erro ao carregar músicas';
+        });
+
+    function renderSongs(list) {
+        const fragment = document.createDocumentFragment();
+        list.forEach(s => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${s.id}</td><td>${s.artist}</td><td>${s.song}</td>`;
+            fragment.appendChild(tr);
+        });
+        tbody.innerHTML = '';
+        tbody.appendChild(fragment);
+    }
+
+    const filterSongs = () => {
+        loading.style.display = 'block';
+        setTimeout(() => {
+            const query = searchInput.value.toLowerCase();
+            const filtered = songs.filter(s => s.artist.toLowerCase().includes(query) || s.song.toLowerCase().includes(query));
+            renderSongs(filtered);
+            loading.style.display = 'none';
+        }, 100);
+    };
+
+    const resetFilter = () => {
+        loading.style.display = 'block';
+        setTimeout(() => {
+            searchInput.value = '';
+            renderSongs(songs);
+            loading.style.display = 'none';
+        }, 100);
+    };
+
+    document.getElementById('btnSearch').addEventListener('click', filterSongs);
+    document.getElementById('btnReset').addEventListener('click', resetFilter);
+});
+</script>
+</body>
+</html>
