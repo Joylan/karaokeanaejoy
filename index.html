@@ -111,8 +111,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterSongs = () => {
         loading.style.display = 'block';
         setTimeout(() => {
-            const query = searchInput.value.toLowerCase();
-            const filtered = songs.filter(s => s.artist.toLowerCase().includes(query) || s.song.toLowerCase().includes(query));
+            const query = searchInput.value.trim().toLowerCase();
+            const filtered = songs.filter(s =>
+                s.artist.toLowerCase().includes(query) ||
+                s.song.toLowerCase().includes(query)
+            );
             renderSongs(filtered);
             loading.style.display = 'none';
         }, 100);
