@@ -5,21 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Músicas</title>
 <style>
-body { font-family: Arial, sans-serif; padding: 10px; }
-h1 { text-align: center; font-size: 24px; margin-bottom: 10px; }
-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-th { background-color: #f2f2f2; }
-input { width: 70%; padding: 10px; margin-right: 5px; font-size: 16px; }
-button { padding: 10px; cursor: pointer; font-size: 16px; }
-
-/* Botão Buscar maior */
-#btnSearch {
-    padding-top: 15px;  /* 30% maior que padding original 10px */
-    padding-bottom: 15px;
+body {
+    font-family: Arial, sans-serif;
+    padding: 0;
+    margin: 0;
 }
 
-/* Container de busca */
+.header {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 1000;
+    padding: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+h1 {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
 .search-container {
     display: flex;
     flex-wrap: wrap;
@@ -27,9 +33,63 @@ button { padding: 10px; cursor: pointer; font-size: 16px; }
     justify-content: flex-start;
 }
 
-/* Mobile: ajustes de layout e fontes */
+input {
+    width: 70%;
+    padding: 10px;
+    margin-right: 5px;
+    font-size: 16px;
+}
+
+button {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#btnSearch {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+.table-container {
+    max-height: 70vh;
+    overflow-y: auto;
+    border: 1px solid #ddd;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f2f2f2;
+    z-index: 10;
+    box-shadow: 0 2px 2px -1px rgba(0,0,0,0.1);
+}
+
+#loading {
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    color: red;
+    margin: 20px 0;
+    display: none;
+}
+
 @media(max-width: 600px) {
-    h1 { font-size: 18px; margin-bottom: 8px; }
+    h1 {
+        font-size: 18px;
+        margin-bottom: 8px;
+    }
     .search-container {
         flex-direction: column;
         align-items: center;
@@ -40,41 +100,36 @@ button { padding: 10px; cursor: pointer; font-size: 16px; }
         font-size: 18px;
         padding: 12px;
     }
-    #btnReset { width: 50%; }
-}
-
-/* Aviso de carregamento */
-#loading {
-    text-align: center;
-    font-size: 16px;
-    font-weight: bold;
-    color: red;
-    margin: 20px 0;
-    display: none;
+    #btnReset {
+        width: 50%;
+    }
 }
 </style>
 </head>
 <body>
-<h1>Músicas Karaokê Ana&Joy</h1>
-
-<div class="search-container">
-    <input type="text" id="search" placeholder="Buscar artista ou música">
-    <button id="btnSearch">Buscar</button>
-    <button id="btnReset">Mostrar todas</button>
+<div class="header">
+    <h1>Músicas Karaokê Ana&Joy</h1>
+    <div class="search-container">
+        <input type="text" id="search" placeholder="Buscar artista ou música">
+        <button id="btnSearch">Buscar</button>
+        <button id="btnReset">Mostrar todas</button>
+    </div>
 </div>
 
 <div id="loading">Carregando músicas...</div>
 
-<table id="songsTable">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Artista</th>
-            <th>Música</th>
-        </tr>
-    </thead>
-    <tbody id="songsBody"></tbody>
-</table>
+<div class="table-container">
+    <table id="songsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Artista</th>
+                <th>Música</th>
+            </tr>
+        </thead>
+        <tbody id="songsBody"></tbody>
+    </table>
+</div>
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
